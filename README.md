@@ -118,7 +118,24 @@ You can configure OpenCode using environment variables:
 | `AZURE_OPENAI_API_KEY`     | For Azure OpenAI models (optional when using Entra ID)                           |
 | `AZURE_OPENAI_API_VERSION` | For Azure OpenAI models                                                          |
 | `LOCAL_ENDPOINT`           | For self-hosted models                                                           |
+| `OPENCODE_DATA_DIRECTORY`  | Override the data directory path (useful for NAS/network filesystem setups, see [NAS/Network Filesystem Usage](#nasnetwork-filesystem-usage)) |
 | `SHELL`                    | Default shell to use (if not specified in config)                                |
+
+### NAS/Network Filesystem Usage
+
+SQLite does not work reliably on NAS or network-mounted filesystems due to file locking limitations. If you run OpenCode from a NAS-mounted directory, you may encounter errors like:
+
+```
+Error: failed to apply migrations: sqlite3: SQL logic error: no such table: goose_db_version; sqlite3: disk I/O error
+```
+
+To resolve this, redirect the data directory (which contains the SQLite database) to a local filesystem path using the `OPENCODE_DATA_DIRECTORY` environment variable:
+
+```bash
+export OPENCODE_DATA_DIRECTORY=/home/your-user/.opencode
+```
+
+This keeps your code repository on the NAS while storing the database on the local disk, avoiding SQLite compatibility issues with network filesystems.
 
 ### Shell Configuration
 
